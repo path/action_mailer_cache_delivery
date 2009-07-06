@@ -15,9 +15,17 @@ module ActionMailerCacheDelivery
   
   module ClassMethods 
     def cached_deliveries
+      return [] unless File.exists?(DELIVERIES_CACHE_PATH) 
+      
       File.open(DELIVERIES_CACHE_PATH,'r') do |f|
         Marshal.load(f)
       end
-    end    
+        
+    end
+    
+    def clear_cache
+      ActionMailer::Base.deliveries = []
+      File.delete(DELIVERIES_CACHE_PATH) if File.exists?(DELIVERIES_CACHE_PATH)
+    end
   end
 end
